@@ -1,15 +1,50 @@
 import express from "express";
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+import studentRouter from "./routes/studentRouter.js";
+import userRouter from "./routes/userRouter.js";
+import productRouter from "./routes/productRouter.js";
 
 const app = express();
+app.use(express.json());
+dotenv.config();
+app.use((req, res, next) => {
+  const authHeader = req.header("Authorization");
 
-app.get("/", () => {
-  console.log("get request recieved");
+  // If there's no Authorization header, continue without auth
+  if (!authHeader) return next();
+
+  // Safely remove Bearer prefix if present
+  const token = authHeader.replace(/^Bearer\s+/i, "");
+
+  jwt.verify(token, "jwt-secret", (err, decoded) => {
+    if (err || !decoded) {
+      return res
+        .status(401)
+        .json({ message: "invalid token please login again" });
+    }
+    req.user = decoded;
+    next();
+  });
 });
 
-app.post("/", () => {
-  console.log("post request recieved");
-});
+const connectionString = process.env.MONGOURL;
+
+mongoose
+  .connect(connectionString)
+  .then(() => {
+    console.log("database connected");
+  })
+  .catch(() => {
+    console.log("not conected");
+  });
+
+app.use("/students", studentRouter);
+app.use("/users", userRouter);
+app.use("/product", productRouter);
 
 app.listen(5000, () => {
-  console.log("server is start");
+  console.log("server is running on port 5000");
 });

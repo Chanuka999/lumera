@@ -1,0 +1,73 @@
+import User from "../models/user.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+export const createUser = (req, res) => {
+  const hashPassword = bcrypt.hashSync(req.body.password, 10);
+  const user = new User({
+    email: req.body.email,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    password: hashPassword,
+  });
+
+  user
+    .save()
+    .then(() => {
+      res
+        .status(200)
+        .json({ success: true, message: "user create successfull" });
+    })
+    .catch(() => {
+      res.status(401).json({ success: false, message: "error" });
+    });
+};
+
+export const userLogin = (req, res) => {
+  User.findOne({
+    email: req.body.email,
+  }).then((user) => {
+    if (user == null) {
+      res.json({
+        message: "user not found",
+      });
+    } else {
+      const isPasswordMatching = bcrypt.compareSync(
+        req.body.password,
+        user.password
+      );
+      if (isPasswordMatching) {
+        const token = jwt.sign(
+          {
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+            isEmailVerified: user.isEmailVerified,
+          },
+          "jwt-secret"
+        );
+        res.json({
+          message: "Login successfull",
+          token: token,
+        });
+      } else {
+        res.json({
+          message: "Invalid password",
+        });
+      }
+    }
+  });
+};
+
+export const isAdmin = (req) => {
+  if (req.user == null) {
+    return false;
+  }
+
+  if (req.user.role != "admin") {
+    return false;
+  }
+
+  return true;
+};
