@@ -45,11 +45,18 @@ export const userLogin = (req, res) => {
             role: user.role,
             isEmailVerified: user.isEmailVerified,
           },
-          "jwt-secret"
+          process.env.JWT_SECRET
         );
         res.json({
           message: "Login successfull",
           token: token,
+          user: {
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+            isEmailVerified: user.isEmailVerified,
+          },
         });
       } else {
         res.json({
