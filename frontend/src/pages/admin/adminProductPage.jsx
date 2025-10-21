@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaRegTrashAlt, FaRegEdit } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiCirclePlus } from "react-icons/ci";
 
 const AdminProductPage = () => {
@@ -9,13 +9,19 @@ const AdminProductPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     let mounted = true;
     setLoading(true);
     setError(null);
 
+    console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
+
     axios
-      .get(import.meta.env.VITE_API_URL + "/api/products")
+      .get(`${import.meta.env.VITE_API_URL}/api/products`, {
+        timeout: 10000,
+      })
       .then((response) => {
         console.log("/api/products response:", response.data);
         const data = response.data;
@@ -33,12 +39,21 @@ const AdminProductPage = () => {
       })
       .catch((err) => {
         console.error("Failed to fetch /api/products:", err);
-        if (mounted)
-          setError(
-            err?.response?.data?.message ||
-              err.message ||
-              "Failed to fetch products"
-          );
+        if (mounted) {
+          if (err.code === "ECONNABORTED") {
+            setError("Request timed out. Please check your network or server.");
+          } else if (err.code === "ERR_NETWORK") {
+            setError(
+              "Network error. Please check your proxy or internet connection."
+            );
+          } else {
+            setError(
+              err?.response?.data?.message ||
+                err.message ||
+                "Failed to fetch products"
+            );
+          }
+        }
       })
       .finally(() => {
         if (mounted) setLoading(false);
@@ -88,6 +103,7 @@ const AdminProductPage = () => {
               <th className="py-3 px-4 text-left">Product Name</th>
               <th className="py-3 px-4 text-left">Product Price</th>
               <th className="py-3 px-4 text-left">Labelled Price</th>
+              <th className="py-3 px-4 text-left">Stock</th>
               <th className="py-3 px-4 text-left">Category</th>
               <th className="py-3 px-4 text-center">Action</th>
             </tr>
@@ -102,9 +118,12 @@ const AdminProductPage = () => {
                 >
                   <td className="py-3 px-4">
                     <img
-                      src={item.images?.[0]}
+                      src={item.images?.[0] ? item.images[0] : "/no-image.svg"}
                       alt={item.name}
                       className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                      onError={() =>
+                        console.error("Image failed to load:", item.images?.[0])
+                      }
                     />
                   </td>
                   <td className="py-3 px-4 text-[var(--color-secondary)] font-medium">
@@ -114,13 +133,16 @@ const AdminProductPage = () => {
                     {item.name}
                   </td>
                   <td className="py-3 px-4 text-[var(--color-secondary)]">
-                    {item.productId}
+                    {item.price ? `$${item.price}` : "N/A"}
                   </td>
                   <td className="py-3 px-4 text-[var(--color-secondary)]">
-                    {item.labelPrice}
+                    {item.labelPrice ? `$${item.labelPrice}` : "N/A"}
                   </td>
                   <td className="py-3 px-4 text-[var(--color-secondary)]">
-                    {item.category}
+                    {item.stock ? `${item.stock}` : "N/A"}
+                  </td>
+                  <td className="py-3 px-4 text-[var(--color-secondary)]">
+                    {item.category || "N/A"}
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex items-center justify-center gap-4">
@@ -134,7 +156,14 @@ const AdminProductPage = () => {
                         title="Edit"
                         className="p-2 rounded-lg hover:bg-[var(--color-accent)]/20 transition"
                       >
-                        <FaRegEdit className="text-[var(--color-accent)] hover:scale-110 transition-transform" />
+                        <FaRegEdit
+                          className="text-[var(--color-accent)] hover:scale-110 transition-transform"
+                          onClick={() => {
+                            navigate("/admin/update-product", {
+                              state: item,
+                            });
+                          }}
+                        />
                       </button>
                     </div>
                   </td>
