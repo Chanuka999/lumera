@@ -1,60 +1,33 @@
 import React, { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+import mediaUpload from "../utils/mediaUpload";
+const anonKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppYnlwaWVqdnlqbWp1cHp2a2F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5ODc4MTgsImV4cCI6MjA3NjU2MzgxOH0.8AoXnp-U6Mm34RQHgrv83o5iFMConHODmmliCGhXj-8";
+const superbaseurl = "https://jibypiejvyjmjupzvkay.supabase.co";
+
+const superbase = createClient(superbaseurl, anonKey);
 
 const TextPage = () => {
-  const [count, setCount] = useState(10);
-  const [status, setStatus] = useState("online");
+  const [file, setFile] = useState(null);
+
+  const uploadImage = async () => {
+    const link = await mediaUpload(file);
+    console.log(link);
+  };
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <div className="w-[500px] h-[500px] bg-amber-100 text-white flex flex-col justify-center items-center gap-[25px]">
-        <div className="flex justify-center items-center  gap-[20px]">
-          <button
-            className="w-[100px] bg-accent h-[40px] rounded-lg"
-            onClick={() => {
-              setCount(count - 1);
-            }}
-          >
-            -
-          </button>
-          <span className="text-accent text-5xl">{count}</span>
-          <button
-            className="w-[100px] bg-accent h-[40px] rounded-lg"
-            onClick={() => {
-              setCount(count + 1);
-            }}
-          >
-            +
-          </button>
-        </div>
-        <div className="flex flex-col justify-center items-center gap-[20px]">
-          <span className="text-accent text-5xl">{status}</span>
-          <div className="flex flex-row gap-[20px]">
-            <button
-              onClick={() => {
-                setStatus("online");
-              }}
-              className="w-[100px] bg-accent h-[40px] rounded-lg"
-            >
-              online
-            </button>
-            <button
-              onClick={() => {
-                setStatus("offline");
-              }}
-              className="w-[100px] bg-accent h-[40px] rounded-lg"
-            >
-              offline
-            </button>
-            <button
-              onClick={() => {
-                setStatus("deactivated");
-              }}
-              className="w-[100px] bg-accent h-[40px] rounded-lg"
-            >
-              deactivated
-            </button>
-          </div>
-        </div>
-      </div>
+      <input
+        type="file"
+        onChange={(e) => {
+          setFile(e.target.files[0]);
+        }}
+      />
+      <button
+        className="bg-blue-600 text-white p-2 rounded"
+        onClick={uploadImage}
+      >
+        upload
+      </button>
     </div>
   );
 };
