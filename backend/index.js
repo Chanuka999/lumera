@@ -7,6 +7,7 @@ import cors from "cors";
 import studentRouter from "./routes/studentRouter.js";
 import userRouter from "./routes/userRouter.js";
 import productRouter from "./routes/productRouter.js";
+import imageProxyRouter from "./routes/imageProxy.js";
 
 const app = express();
 app.use(express.json());
@@ -46,6 +47,7 @@ mongoose
 app.use("/api/students", studentRouter);
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
+app.use("/api/image-proxy", imageProxyRouter);
 
 app.listen(5000, () => {
   console.log("server is running on port 5000");

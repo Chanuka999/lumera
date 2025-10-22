@@ -46,12 +46,13 @@ export const deleteproduct = async (req, res) => {
   try {
     const productId = req.params.productId;
 
-    await Product.deleteOne({
-      productId: productId,
-    });
-    res.status(200).json({
-      message: "product id delete succedfully",
-    });
+    const result = await Product.deleteOne({ productId: productId });
+    // result.deletedCount === 1 when a document was removed
+    if (result.deletedCount && result.deletedCount > 0) {
+      res.status(200).json({ message: "product deleted successfully" });
+    } else {
+      res.status(404).json({ message: "product not found" });
+    }
   } catch (error) {
     res.status(500).json({
       message: "internal server error",
