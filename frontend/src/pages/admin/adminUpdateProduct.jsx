@@ -1,267 +1,254 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import mediaUpload from "../../utils/mediaUpload";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-const UpdateProduct = () => {
+export default function UpdateProductPage() {
   const location = useLocation();
-
-  const [productId, setProductId] = useState(location.state.productId);
+  const [productId, setProductId] = useState(location.state.productID);
   const [name, setName] = useState(location.state.name);
-  const [altName, setAltName] = useState(
-    Array.isArray(location.state.altName)
-      ? location.state.altName.join(",")
-      : ""
-  );
+  const [altNames, setAltNames] = useState(location.state.altNames.join(","));
   const [description, setDescription] = useState(location.state.description);
   const [images, setImages] = useState([]);
   const [price, setPrice] = useState(location.state.price);
-  const [labelPrice, setLabelPrice] = useState(location.state.labelPrice);
+  const [labelledPrice, setLabelledPrice] = useState(
+    location.state.labelledPrice
+  );
   const [category, setCategory] = useState(location.state.category);
   const [stock, setStock] = useState(location.state.stock);
   const navigate = useNavigate();
 
-  const updateProduct = async () => {
+  async function updateProduct() {
     const token = localStorage.getItem("token");
     if (token == null) {
       navigate("/login");
       return;
     }
 
-    // Validate required fields
-
-    if (!productId || productId.trim() === "") {
-      toast.error("Product ID is required");
-      return;
+    const promises = [];
+    for (let i = 0; i < images.length; i++) {
+      promises[i] = mediaUpload(images[i]);
     }
-    if (!labelPrice || Number(labelPrice) === 0) {
-      toast.error("Label Price is required");
-      return;
-    }
-
-    // Convert FileList to array
-    const imageArray = images && images.length ? Array.from(images) : [];
-    let urls = [];
+    //
     try {
-      if (imageArray.length > 0) {
-        urls = await Promise.all(imageArray.map((file) => mediaUpload(file)));
-      } else {
+      let urls = await Promise.all(promises);
+
+      if (urls.length == 0) {
         urls = location.state.images;
       }
-      const alternativenames = altName
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
+
+      const alternativeNames = altNames.split(",");
 
       const product = {
-        productId: productId,
+        productID: productId,
         name: name,
-        altName: alternativenames,
+        altNames: alternativeNames,
         description: description,
         images: urls,
         price: price,
-        labelPrice: labelPrice,
+        labelledPrice: labelledPrice,
         category: category,
         stock: stock,
       };
-      // Ensure VITE_API_URL is set and valid
-      let base = import.meta.env.VITE_API_URL;
-      if (!base || typeof base !== "string" || !/^https?:\/+/.test(base)) {
-        toast.error(
-          "VITE_API_URL is not set or invalid. Check your .env file."
-        );
-        console.error("VITE_API_URL is invalid:", base);
-        return;
-      }
-      if (!base.endsWith("/")) base += "/";
-      const postUrl = base + "api/products/" + productId;
-      console.log("PUT URL:", postUrl);
-      console.log("Payload:", product);
-      await axios.put(postUrl, product, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      toast.success("product updated successfully");
+
+      await axios.put(
+        import.meta.env.VITE_API_URL + "/api/products/" + productId,
+        product,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      toast.success("Product updated successfully");
       navigate("/admin/products");
-    } catch (err) {
+    } catch {
       toast.error("An error occurred");
-      console.error(err);
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-primary p-6">
-      <div className="w-full max-w-lg bg-white shadow-xl rounded-2xl border-t-4 border-accent p-8">
-        <h2 className="text-2xl font-bold text-secondary mb-6 text-center">
-          update Product
-        </h2>
-
-        <div className="flex flex-col gap-4">
+    <div className="min-h-screen w-full bg-primary/70 flex items-center justify-center p-6">
+      <div className="w-full max-w-3xl rounded-2xl border border-accent/30 bg-white shadow-xl">
+        {/* Header */}
+        <div className="flex items-center justify-between gap-3 border-b border-accent/20 px-6 py-5">
           <div>
-            <label className="block mb-2 text-sm font-semibold text-secondary">
-              product Id
-            </label>
-            <input
-              disabled
-              className="p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
-              placeholder="Product ID"
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
-            />
+            <h1 className="text-xl font-semibold text-secondary">
+              Update Product
+            </h1>
+            <p className="text-sm text-secondary/70">
+              Create a new SKU with clean metadata.
+            </p>
           </div>
+          <div className="h-10 w-10 rounded-full bg-accent/15 ring-1 ring-accent/30" />
+        </div>
 
-          <div>
-            <label className="block mb-2 text-sm font-semibold text-secondary">
-              product Name
+        {/* Form grid */}
+        <div className="px-6 py-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Product ID */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-secondary">
+                Product ID
+              </span>
+              <input
+                disabled
+                className="h-11 rounded-xl border border-secondary/20 bg-white px-3 text-secondary placeholder:text-secondary/40 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition"
+                value={productId}
+                onChange={(e) => {
+                  setProductId(e.target.value);
+                }}
+                placeholder="e.g., DS-CR-001"
+              />
             </label>
-            <input
-              className="p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
-              placeholder="Product Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+
+            {/* Name */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-secondary">Name</span>
+              <input
+                className="h-11 rounded-xl border border-secondary/20 bg-white px-3 text-secondary placeholder:text-secondary/40 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+                placeholder="e.g., Diamond Shine Night Cream"
+              />
+            </label>
+
+            {/* Alt Names */}
+            <label className="flex flex-col gap-1.5 md:col-span-2">
+              <span className="text-sm font-medium text-secondary">
+                Alternative Names
+              </span>
+              <input
+                className="h-11 rounded-xl border border-secondary/20 bg-white px-3 text-secondary placeholder:text-secondary/40 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition"
+                value={altNames}
+                onChange={(e) => {
+                  setAltNames(e.target.value);
+                }}
+                placeholder="Comma-separated; e.g., night cream, hydrating cream"
+              />
+            </label>
+
+            {/* Description */}
+            <label className="flex flex-col gap-1.5 md:col-span-2">
+              <span className="text-sm font-medium text-secondary">
+                Description
+              </span>
+              <textarea
+                className="min-h-[120px] rounded-xl border border-secondary/20 bg-white px-3 py-2 text-secondary placeholder:text-secondary/40 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition"
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
+                placeholder="Brief product overview, benefits, and usage."
+              />
+            </label>
+
+            {/* Images */}
+            <label className="flex flex-col gap-1.5 md:col-span-2">
+              <span className="text-sm font-medium text-secondary">Images</span>
+              <input
+                type="file"
+                onChange={(e) => {
+                  setImages(e.target.files);
+                }}
+                multiple
+                className="block w-full cursor-pointer rounded-xl border border-secondary/20 bg-white file:mr-4 file:rounded-lg file:border-0 file:bg-accent/10 file:px-4 file:py-2 file:text-secondary file:font-medium hover:file:bg-accent/20 transition"
+              />
+              <span className="text-xs text-secondary/60">
+                PNG/JPG recommended. Multiple files supported.
+              </span>
+            </label>
+
+            {/* Price */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-secondary">Price</span>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => {
+                  setPrice(e.target.value);
+                }}
+                placeholder="0.00"
+                className="h-11 rounded-xl border border-secondary/20 bg-white px-3 text-secondary placeholder:text-secondary/40 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition"
+              />
+            </label>
+
+            {/* Labelled Price */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-secondary">
+                Labelled Price
+              </span>
+              <input
+                type="number"
+                value={labelledPrice}
+                onChange={(e) => {
+                  setLabelledPrice(e.target.value);
+                }}
+                placeholder="MRP / Sticker Price"
+                className="h-11 rounded-xl border border-secondary/20 bg-white px-3 text-secondary placeholder:text-secondary/40 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition"
+              />
+            </label>
+
+            {/* Category */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-secondary">
+                Category
+              </span>
+              <select
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                }}
+                className="h-11 rounded-xl border border-secondary/20 bg-white px-3 text-secondary outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition"
+              >
+                <option value="cream">Cream</option>
+                <option value="lotion">Lotion</option>
+                <option value="serum">Serum</option>
+              </select>
+            </label>
+
+            {/* Stock */}
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-secondary">Stock</span>
+              <input
+                type="number"
+                value={stock}
+                onChange={(e) => {
+                  setStock(e.target.value);
+                }}
+                placeholder="0"
+                className="h-11 rounded-xl border border-secondary/20 bg-white px-3 text-secondary placeholder:text-secondary/40 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition"
+              />
+            </label>
           </div>
+        </div>
 
-          <div>
-            <label className="block mb-2 text-sm font-semibold text-secondary">
-              AltName
-            </label>
-            <input
-              className="p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
-              placeholder="Alternate Name"
-              value={altName}
-              onChange={(e) => setAltName(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-semibold text-secondary">
-              Description
-            </label>
-            <textarea
-              className="p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
-              placeholder="Product Description"
-              rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-semibold text-secondary">
-              Upload Images
-            </label>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-4">
-                <input
-                  id="product-images"
-                  type="file"
-                  onChange={(e) => setImages(e.target.files)}
-                  multiple
-                  className="hidden"
-                />
-                <label
-                  htmlFor="product-images"
-                  className="inline-block rounded-lg cursor-pointer shadow"
-                >
-                  Choose Images
-                </label>
-                <span className="text-sm text-gray-500">
-                  {images && images.length > 0
-                    ? `${images.length} new selected`
-                    : "No new images selected"}
-                </span>
-              </div>
-              {/* Show existing images */}
-              {Array.isArray(location.state.images) &&
-                location.state.images.length > 0 && (
-                  <div className="flex gap-2 mt-2 flex-wrap">
-                    {location.state.images.map((img, idx) => (
-                      <img
-                        key={idx}
-                        src={img}
-                        alt={`Product ${idx}`}
-                        className="w-12 h-12 object-cover rounded border"
-                      />
-                    ))}
-                  </div>
-                )}
-            </div>
-          </div>
-
-          <div className="flex gap-4">
-            <label className="block mb-2 text-sm font-semibold text-secondary">
-              price
-            </label>
-            <input
-              type="number"
-              placeholder="Price"
-              className="w-1/2 p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-
-            <label className="block mb-2 text-sm font-semibold text-secondary">
-              Label Price
-            </label>
-            <input
-              type="number"
-              placeholder="Label Price"
-              className="w-1/2 p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
-              value={labelPrice}
-              onChange={(e) => setLabelPrice(e.target.value)}
-            />
-          </div>
-
-          <div className="flex gap-4 items-center">
-            <label className="block mb-2 text-sm font-semibold text-secondary">
-              category
-            </label>
-            <select
-              className="w-1/2 p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent bg-white"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="cream">Cream</option>
-              <option value="lotion">Lotion</option>
-              <option value="serum">Serum</option>
-            </select>
-
-            <label className="block mb-2 text-sm font-semibold text-secondary">
-              Stock
-            </label>
-            <input
-              type="number"
-              placeholder="Stock Quantity"
-              className="w-1/2 p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
-              value={stock}
-              onChange={(e) => setStock(e.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-row gap-[10px]">
+        {/* Footer */}
+        <div className="flex items-center justify-between gap-3 border-t border-accent/20 px-6 py-4">
+          <span className="text-xs text-secondary/60">
+            Tip: Maintain consistent naming for SKU discoverability.
+          </span>
+          <div className="flex items-center gap-2">
             <button
               onClick={() => {
                 navigate("/admin/products");
               }}
-              className=" w-[50%]  bg-red-600 text-white font-semibold py-3 rounded-lg hover:bg-[#5f0404] transition-all duration-300 shadow-md"
+              className="rounded-full bg-[#FF000050] px-3 h-[40px] w-[100px] py-1 text-md flex justify-center items-center font-medium text-secondary ring-1 ring-accent/30 hover:border-red-500 hover:border-[2px]"
             >
-              cancel
+              Cancel
             </button>
-
             <button
               onClick={updateProduct}
-              className="w-[50%]  bg-accent text-white font-semibold py-3 rounded-lg hover:bg-[#ff6b88] transition-all duration-300 shadow-md"
+              className="rounded-full bg-accent/15 px-3 h-[40px] w-[100px] py-1 text-md flex justify-center items-center font-medium text-secondary ring-1 ring-accent/30 hover:border-accent hover:border-[2px]"
             >
-              submit
+              Submit
             </button>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default UpdateProduct;
+}
