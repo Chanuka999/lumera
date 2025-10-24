@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./ProductCard.css";
 
 const ProductCard = (props) => {
@@ -22,9 +23,12 @@ const ProductCard = (props) => {
       )}
       <p className="text-sm text-secondary/70">{product.productId}</p>
       <p className="text-sm text-secondary/70">{product.category}</p>
-      <button className="w-full h-[30px] border border-accent text-accent hover:bg-accent hover:text-white">
+      <Link
+        to={"/overview/" + product.productId}
+        className="w-full h-[30px] border text-center border-accent text-accent hover:bg-accent hover:text-white"
+      >
         View Product
-      </button>
+      </Link>
     </div>
   );
 };

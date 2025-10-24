@@ -7,7 +7,7 @@ import axios from "axios";
 const AddProduct = () => {
   const [productId, setProductId] = useState("");
   const [name, setName] = useState("");
-  const [altName, setAltName] = useState("");
+  const [altNames, setAltNames] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
   const [price, setPrice] = useState(0);
@@ -44,7 +44,7 @@ const AddProduct = () => {
     let urls = [];
     try {
       urls = await Promise.all(imageArray.map((file) => mediaUpload(file)));
-      const alternativenames = altName
+      const alternativenames = altNames
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean);
@@ -127,8 +127,8 @@ const AddProduct = () => {
             <input
               className="p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
               placeholder="Alternate Name"
-              value={altName}
-              onChange={(e) => setAltName(e.target.value)}
+              value={altNames}
+              onChange={(e) => setAltNames(e.target.value)}
             />
           </div>
 
