@@ -5,11 +5,17 @@ const ProductCard = (props) => {
   const product = props.product;
   return (
     <div className="w-[300px] h-[400px] shadow-2xl flex flex-col m-3 p-[10px]">
-      <img
-        className="w-full h-[250px] object-cover"
-        src={product.images[0]}
-        alt=""
-      />
+      {Array.isArray(product.images) && product.images.length > 0 ? (
+        <img
+          className="w-full h-[250px] object-cover"
+          src={product.images[0]}
+          alt={product.name || "product"}
+        />
+      ) : (
+        <div className="w-full h-[250px] bg-gray-100 flex items-center justify-center text-sm text-gray-500">
+          No image
+        </div>
+      )}
       <h1 className="text-xl font-bold text-secondary">{product.name}</h1>
       {product.labelPrice > product.price && (
         <div className="flex gap-3 items-center">
