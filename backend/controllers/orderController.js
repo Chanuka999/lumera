@@ -9,6 +9,13 @@ export const createOrder = async (req, res) => {
   //   }
 
   try {
+    const user = req.user;
+    if (user == null) {
+      res.status(401).json({
+        message: "Unauthorized use",
+      });
+      return;
+    }
     // Get the most recent order (by date) from the DB
     const lastOrder = await Order.findOne().sort({ date: -1 });
 
@@ -26,12 +33,22 @@ export const createOrder = async (req, res) => {
       newOrderId = "CBC" + newOrderNumberInString;
     }
 
+    let customerName = req.body.customerName;
+    if (customerName == null) {
+      customerName = user.firstName + " " + user.lastName;
+    }
+
+    let phone = req.body.phone;
+    if (phone == null) {
+      phone = "not provided";
+    }
+
     const newOrder = new Order({
       orderId: newOrderId,
       items: [],
       customerName: req.body.customerName,
-      email: req.body.email,
-      phone: req.body.phone,
+      email: user.email,
+      phone: phone,
       address: req.body.address,
       total: req.body.total,
     });

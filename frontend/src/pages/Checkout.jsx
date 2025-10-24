@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-
+import toast from "react-hot-toast";
 import { CiCircleChevDown, CiCircleChevUp } from "react-icons/ci";
 import { MdOutlineDeleteForever } from "react-icons/md";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const location = useLocation();
   const [cart, setCart] = useState(location.state);
+  const navigate = useNavigate();
 
   const getTotal = () => {
     let total = 0;
@@ -14,6 +15,15 @@ const Checkout = () => {
       total += item.price * item.quantity;
     });
     return total;
+  };
+
+  const purchaseCart = () => {
+    const token = localStorage.getItem("token");
+    if (token == null) {
+      toast.error("please login to place an order");
+      navigate("/login");
+      return;
+    }
   };
 
   return (
@@ -79,6 +89,7 @@ const Checkout = () => {
         <div className="w-full h-[120px] bg-white flex justify-end items-center relative">
           <button
             to="/checkout"
+            onClick={purchaseCart}
             className="absolute left-0 bg-accent text-white px-6 py-3 ml-[20px] hover:bg-accent/80"
           >
             order
