@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Loader from "../components/Loader";
 import ImageSlide from "../components/ImageSlide";
+import { addToCart } from "../utils/cart";
 
 const ProductOverview = () => {
   const params = useParams();
@@ -31,7 +32,7 @@ const ProductOverview = () => {
           <div className="w-[50%] flex justify-center items-center">
             <ImageSlide images={product.images} />
           </div>
-          <div className="w-[50%] h-full flex-col items-center gap-4 p-10">
+          <div className="w-[50%] h-full flex-col flex  items-center gap-4 p-10">
             <span>{product.productId}</span>
             <h1 className="text-2xl text-center font-bold">
               {product.name}
@@ -60,12 +61,31 @@ const ProductOverview = () => {
               </p>
             )}
             <div className="w-full h-[40px] flex gap-4 mt-[60px]">
-              <button className="w-[50%] h-full bg-accent text-white font-semibold hover:bg-accent/80">
+              <button
+                onClick={() => {
+                  addToCart(product, 1);
+                  toast.success("Added to cart");
+                }}
+                className="w-[50%] h-full bg-accent text-white font-semibold hover:bg-accent/80"
+              >
                 Add To Cart
               </button>
-              <button className="w-[50%] h-full border border-accent text-accent font-semibold hover:bg-accent">
+              <Link
+                to="/checkout"
+                state={[
+                  {
+                    image: product.images[0],
+                    productId: product.productId,
+                    name: product.name,
+                    price: product.price,
+                    labelPrice: product.labelPrice,
+                    quantity: 1,
+                  },
+                ]}
+                className="w-[50%] text-center h-full border border-accent text-accent font-semibold hover:bg-accent"
+              >
                 Buy Now
-              </button>
+              </Link>
             </div>
           </div>
         </div>

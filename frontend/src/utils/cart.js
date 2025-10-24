@@ -4,7 +4,7 @@ export const loadCart = () => {
   let cartString = localStorage.getItem("cart");
 
   if (cartString == null) {
-    localStorage.getItem("cart", "[]");
+    localStorage.setItem("cart", "[]");
     cartString = "[]";
   }
 
@@ -15,13 +15,13 @@ export const loadCart = () => {
 export const addToCart = (product, quantity) => {
   let cart = loadCart();
 
-  const existingitemIndex = cart.findIndex((item) => {
+  const existingItemIndex = cart.findIndex((item) => {
     return item.productId == product.productId;
   });
 
-  if (existingitemIndex == -1) {
+  if (existingItemIndex == -1) {
     if (quantity < 1) {
-      console.log("Quantity must be at least 1");
+      console.log("quentity must be at least 1");
       return;
     }
 
@@ -29,24 +29,38 @@ export const addToCart = (product, quantity) => {
       productId: product.productId,
       name: product.name,
       price: product.price,
-      labelprice: product.labelprice,
-      quantity: product.quantity,
-      image: product.image[0],
+      labelPrice: product.labelPrice,
+      quantity: quantity,
+      // guard against missing or non-array images; store null when absent
+      image:
+        Array.isArray(product.images) && product.images.length > 0
+          ? product.images[0]
+          : null,
     };
     cart.push(cartItem);
   } else {
-    const existingitem = cart[existingitemIndex];
+    // item already in cart
+    const existingItem = cart[existingItemIndex];
 
-    const newQuantity = existingitem.quantity + quantity;
+    const newQuantity = existingItem.quantity + quantity;
 
     if (newQuantity < 1) {
       cart = cart.filter((item) => {
         return item.productId != product.productId;
       });
     } else {
-      cart[existingitem].quantity = newQuantity;
+      existingItem.quantity = newQuantity;
     }
   }
+  localStorage.setItem("cart", JSON.stringify(cart));
+};
 
-  localStorage.getItem("cart", JSON.stringify(cart));
+export const getTotal = () => {
+  const cart = loadCart();
+  let total = 0;
+
+  cart.forEach((item) => {
+    total += item.price * item.quantity;
+  });
+  return total;
 };

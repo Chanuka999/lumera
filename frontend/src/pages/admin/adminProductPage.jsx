@@ -141,11 +141,17 @@ export default function AdminProductPage() {
                   }`}
                 >
                   <td className="py-3 px-4">
-                    <img
-                      src={item.images[0]}
-                      alt={item.name}
-                      className="w-16 h-16 object-cover rounded-lg shadow-sm"
-                    />
+                    {Array.isArray(item.images) && item.images.length > 0 ? (
+                      <img
+                        src={item.images[0]}
+                        alt={item.name}
+                        className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 bg-gray-100 rounded-lg shadow-sm flex items-center justify-center text-xs text-gray-500">
+                        No image
+                      </div>
+                    )}
                   </td>
                   <td className="py-3 px-4 font-medium text-secondary">
                     {item.productId}
