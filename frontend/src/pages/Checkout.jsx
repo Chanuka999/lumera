@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { CiCircleChevDown, CiCircleChevUp } from "react-icons/ci";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Checkout = () => {
   const location = useLocation();
@@ -17,12 +18,43 @@ const Checkout = () => {
     return total;
   };
 
-  const purchaseCart = () => {
+  const purchaseCart = async () => {
     const token = localStorage.getItem("token");
     if (token == null) {
       toast.error("please login to place an order");
       navigate("/login");
       return;
+    }
+
+    try {
+      const items = [];
+      for (let i = 0; i < cart.length; i++) {
+        items.push({
+          productId: cart[i].productId,
+          quantity: cart[i].quantity,
+        });
+      }
+
+      await axios.post(
+        import.meta.env.VITE_API_URL + "/api/orders",
+        {
+          address: "No 123,Main Street,City",
+          items: items,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("order placed successfullly");
+    } catch (error) {
+      toast.error("failed to place order");
+      console.error(error);
+
+      if (error.response && error.response.status === 400) {
+        toast.error(error.response.data.message);
+      }
     }
   };
 
