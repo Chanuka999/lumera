@@ -25,14 +25,17 @@ const ProductOverview = () => {
   }, []);
 
   return (
-    <div className="w-full h-[calc(100vh-100px)] text-secondary">
+    <div className="w-full  min-h-[calc(100vh-100px)] text-secondary bg-primary">
       {status == "loading" && <Loader />}
       {status == "success" && (
-        <div className="w-full h-full flex">
-          <div className="w-[50%] flex justify-center items-center">
+        <div className="w-full flex-col flex lg:flex-row p-10">
+          <h1 className="text-2xl text-center font-bold lg:hidden">
+            {product.name}
+          </h1>
+          <div className="w-full lg:w-[50%] flex justify-center items-center">
             <ImageSlide images={product.images} />
           </div>
-          <div className="w-[50%] h-full flex-col flex  items-center gap-4 p-10">
+          <div className="w-full lg:w-[50%] h-full flex-col flex bg-primary items-center gap-4 p-10">
             <span>{product.productId}</span>
             <h1 className="text-2xl text-center font-bold">
               {product.name}
@@ -82,7 +85,7 @@ const ProductOverview = () => {
                     quantity: 1,
                   },
                 ]}
-                className="w-[50%] text-center h-full border border-accent text-accent font-semibold hover:bg-accent"
+                className="w-[50%] text-center flex justify-center items-center h-full border border-accent text-accent font-semibold hover:bg-accent"
               >
                 Buy Now
               </Link>

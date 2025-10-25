@@ -14,7 +14,7 @@ const CartPage = () => {
           return (
             <div
               key={index}
-              className="w-full h-[120px] bg-white flex relative"
+              className="w-full h-[120px] bg-white flex relative lg:flex"
             >
               <button
                 onClick={() => {

@@ -5,6 +5,7 @@ import ProductPage from "./productPage";
 import ProductOverview from "./ProductOverview";
 import CartPage from "./Cart";
 import Checkout from "./Checkout";
+import Test from "./Test";
 
 const HomePage = () => {
   return (
