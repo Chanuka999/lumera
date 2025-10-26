@@ -8,76 +8,87 @@ const CartPage = () => {
   const [cart, setCart] = useState(loadCart());
 
   return (
-    <div className="w-full h-[calc(100vh-100px)] bg-primary flex flex-col p-[25px] items-center">
-      <div className="w-[600px] flex flex-col gap-4">
-        {cart.map((item, index) => {
-          return (
-            <div
-              key={index}
-              className="w-full h-[120px] bg-white flex relative lg:flex"
+    <div className="w-full min-h-screen bg-primary flex flex-col items-center p-4 sm:p-6 md:p-8">
+      <div className="w-full max-w-[600px] flex flex-col gap-4">
+        {cart.map((item, index) => (
+          <div
+            key={index}
+            className="w-full bg-white flex flex-col sm:flex-row relative p-4 sm:p-3 rounded-lg shadow-sm"
+          >
+            {/* Delete Button */}
+            <button
+              onClick={() => {
+                addToCart(item, -item.quantity);
+                setCart(loadCart());
+              }}
+              className="absolute top-2 right-2 sm:static sm:order-3 text-red-500 text-2xl hover:bg-red-500 hover:text-white rounded-full p-1 transition"
             >
-              <button
-                onClick={() => {
-                  addToCart(item, -item.quantity);
-                  setCart(loadCart);
-                }}
-                className="absolute text-red-500 right-[-30px] text-2xl rounded-full aspect-square hover:bg-red-500 hover:text-white p-[5px] font-bold"
-              >
-                <MdOutlineDeleteForever />
-              </button>
-              <img
-                className="h-full aspect-square object-cover"
-                src={item.image}
-              />
-              <div className="w-[200px] h-full flex flex-col pl-[5px] pt-[10px]">
-                <h1 className="font-semibold text-lg w-full text-wrap">
-                  {item.name}
-                </h1>
-                <span className="text-sm text-secondary">{item.productId}</span>
-              </div>
-              <div className="w-[100px] h-full  flex flex-col justify-center items-center">
-                <CiCircleChevUp
-                  className="text-3xl"
-                  onClick={() => {
-                    addToCart(item, 1);
-                    setCart(loadCart());
-                  }}
-                />
-                <span className="font-semibold text-4xl">{item.quantity}</span>
-                <CiCircleChevDown
-                  onClick={() => {
-                    addToCart(item, -1);
-                    setCart(loadCart());
-                  }}
-                  className="text-3xl"
-                />
-              </div>
-              <div className="w-[180px]  h-full flex flex-col">
-                {item.labelPrice > item.price && (
-                  <span className="text-secondary w-full text-right line-through text-lg pr-[10px] mt-[20px]">
-                    LKR {item.labelPrice.toFixed(2)}
-                  </span>
-                )}
-                <span className="font-semibold text-accent w-full text-right text-2xl pr-[10px] mt-[5px]">
-                  LKR {item.price.toFixed(2)}
-                </span>
-              </div>
+              <MdOutlineDeleteForever />
+            </button>
+
+            {/* Image */}
+            <img
+              className="w-full sm:w-[120px] h-[120px] object-cover rounded-md"
+              src={item.image}
+              alt={item.name}
+            />
+
+            {/* Product Details */}
+            <div className="flex flex-col flex-grow sm:pl-4 mt-3 sm:mt-0">
+              <h1 className="font-semibold text-lg sm:text-xl text-secondary">
+                {item.name}
+              </h1>
+              <span className="text-sm text-gray-500">{item.productId}</span>
             </div>
-          );
-        })}
-        <div className="w-full h-[120px] bg-white flex justify-end items-center relative">
+
+            {/* Quantity Controls */}
+            <div className="flex sm:flex-col items-center justify-center gap-2 mt-3 sm:mt-0">
+              <CiCircleChevUp
+                className="text-3xl cursor-pointer hover:text-accent transition"
+                onClick={() => {
+                  addToCart(item, 1);
+                  setCart(loadCart());
+                }}
+              />
+              <span className="font-semibold text-2xl sm:text-3xl">
+                {item.quantity}
+              </span>
+              <CiCircleChevDown
+                className="text-3xl cursor-pointer hover:text-accent transition"
+                onClick={() => {
+                  addToCart(item, -1);
+                  setCart(loadCart());
+                }}
+              />
+            </div>
+
+            {/* Price Section */}
+            <div className="flex sm:flex-col items-center justify-center sm:items-end mt-3 sm:mt-0 ml-auto">
+              {item.labelPrice > item.price && (
+                <span className="text-gray-500 line-through text-sm sm:text-lg sm:text-right">
+                  LKR {item.labelPrice.toFixed(2)}
+                </span>
+              )}
+              <span className="font-semibold text-accent text-xl sm:text-2xl text-right">
+                LKR {item.price.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        ))}
+
+        {/* Checkout Section */}
+        <div className="w-full bg-white flex flex-col sm:flex-row justify-between items-center p-4 rounded-lg shadow-sm">
           <Link
             to="/checkout"
             state={cart}
-            className="absolute left-0 bg-accent text-white px-6 py-3 ml-[20px] hover:bg-accent/80"
+            className="bg-accent text-white px-6 py-3 rounded-md hover:bg-accent/80 transition w-full sm:w-auto text-center"
           >
-            procede to checkout
+            Proceed to Checkout
           </Link>
-          <div className="h-[50px]">
-            <span className="font-semibold text-accent w-full text-right text-2xl pr-[10px] mt-[5px]">
-              Total:LKR{getTotal().toFixed(2)}
-            </span>
-          </div>
+
+          <span className="font-semibold text-accent text-xl sm:text-2xl mt-3 sm:mt-0">
+            Total: LKR {getTotal().toFixed(2)}
+          </span>
         </div>
       </div>
     </div>
