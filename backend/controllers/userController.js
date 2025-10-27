@@ -44,6 +44,7 @@ export const userLogin = (req, res) => {
             lastName: user.lastName,
             role: user.role,
             isEmailVerified: user.isEmailVerified,
+            image: user.image,
           },
           process.env.JWT_SECRET
         );
@@ -77,4 +78,15 @@ export const isAdmin = (req) => {
   }
 
   return true;
+};
+
+export const getUser = (req, res) => {
+  if (req.user == null) {
+    res.status(401).json({
+      message: "unauthorized",
+    });
+    return;
+  } else {
+    res.json(req.user);
+  }
 };
