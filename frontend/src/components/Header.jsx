@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { BsCart4 } from "react-icons/bs";
 import { MdMenu } from "react-icons/md";
 
+import UserData from "./UserData";
+
 const Header = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
@@ -53,6 +55,9 @@ const Header = () => {
               <a href="/cart" className="p-4 border-b border-secondary/10">
                 Cart
               </a>
+              <div className="lg:hidden flex w-[200px] absolute right-[100px] justify-end items-center gap-4">
+                <UserData />
+              </div>
             </div>
           </div>
         )}
@@ -62,6 +67,11 @@ const Header = () => {
           <Link to="/about">About</Link>
           <Link to="/contact">Contact</Link>
         </div>
+
+        <div className="h-full w-[80px] absolute right-[80px] top-0 flex justify-center items-center gap-4">
+          <UserData />
+        </div>
+
         <Link
           to="/cart"
           className="h-full absolute hidden right-0 text-3xl lg:flex justify-center items-center"
