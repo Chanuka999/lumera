@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: "http://www.gravatar.com/avatar/",
+    default: "./user.png",
   },
 });
 
