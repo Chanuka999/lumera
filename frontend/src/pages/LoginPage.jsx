@@ -11,7 +11,9 @@ const LoginPage = () => {
 
   const googleLogin = useGoogleLogin({
     onSuccess: (response) => {
-      console.log(response);
+      axios.post(import.meta.env.VITE_API_URL + "/api/users/google-login", {
+        token: response.access_token,
+      });
     },
   });
 

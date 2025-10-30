@@ -90,3 +90,5 @@ export const getUser = (req, res) => {
     res.json(req.user);
   }
 };
+
+export const googleLogin = (req, res) => {};
