@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (response) => {
+      console.log(response);
+    },
+  });
 
   const handleLogin = async () => {
     try {
@@ -78,14 +85,21 @@ const LoginPage = () => {
           >
             Login
           </button>
+
+          <button
+            onClick={googleLogin}
+            className="w-full h-12 bg-[var(--color-accent)] text-white font-medium rounded-lg hover:bg-[var(--color-accent)]/80 transition-all duration-300 shadow-md"
+          >
+            Google Login
+          </button>
           <p className="text-sm text-[var(--color-secondary)]/70">
             Don't have an account?{" "}
-            <a
-              href="/signup"
+            <Link
+              to="/register"
               className="text-[var(--color-accent)] hover:underline"
             >
               Sign Up
-            </a>
+            </Link>
           </p>
         </div>
       </div>
