@@ -2,6 +2,22 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import axios from "axios";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+import OTP from "../models/otpModel.js";
+
+dotenv.config();
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.APP_PASSWORD,
+  },
+});
 
 export const createUser = (req, res) => {
   const hashPassword = bcrypt.hashSync(req.body.password, 10);
@@ -33,6 +49,12 @@ export const userLogin = (req, res) => {
         message: "user not found",
       });
     } else {
+      if (user.isBlock) {
+        res.status(403).json({
+          message: "Your accout has been blocked.please contact admin",
+        });
+        return;
+      }
       const isPasswordMatching = bcrypt.compareSync(
         req.body.password,
         user.password
@@ -156,6 +178,12 @@ export const googleLogin = async (req, res) => {
       });
       return;
     } else {
+      if (user.isBlock) {
+        res.status(403).json({
+          message: "Your account has been blocked.please contact admin",
+        });
+        return;
+      }
       const jwtToken = jwt.sign(
         {
           email: user.email,
@@ -190,19 +218,128 @@ export const googleLogin = async (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
-  if (!isAdmin) {
-    req.status(403).json({
-      message: "Frobiddn",
-    });
-    return;
+  // Check admin permission
+  if (!isAdmin(req)) {
+    return res.status(403).json({ message: "forbidden" });
   }
 
   try {
     const users = await User.find();
-    res.json(users);
+    // return consistent response shape expected by frontend
+    return res.json({ data: users });
+  } catch (error) {
+    console.error("getAllUsers error:", error);
+    return res.status(500).json({ message: "failed to get users" });
+  }
+};
+
+export const blockUser = async (req, res) => {
+  // Only admins can toggle block status
+  if (!isAdmin(req)) {
+    return res.status(403).json({ message: "forbidden" });
+  }
+
+  const email = req.params.email;
+  const { isBlock } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "email is required" });
+  }
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { email },
+      { isBlock: !!isBlock },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    return res.json({ success: true, data: user });
+  } catch (error) {
+    console.error("blockUser error:", error);
+    return res.status(500).json({ message: "failed to change block status" });
+  }
+};
+
+export const sendOTP = async (req, res) => {
+  const email = req.params.email;
+  if (email == null) {
+    res.status(400).json({
+      message: "Email is required",
+    });
+    return;
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000);
+
+  try {
+    await otp.deleteMany({
+      email: email,
+    });
+
+    const newOTP = new OTP({
+      email: email,
+      otp: otp,
+    });
+
+    await newOTP.save();
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your OTP for password reset",
+      text: `your OTP for password reset is ${otp}.It is valid for 10 minutes`,
+    });
+
+    res.json({
+      message: "OTP sent to your email",
+    });
   } catch (error) {
     res.status(500).json({
-      message: "failed to get users",
+      message: "Failed to send OTP",
     });
   }
+};
+
+export const changePasswordViaOTP = async (req, res) => {
+  const email = req.body.email;
+  const otp = req.body.otp;
+  const newPassword = req.body.newPassword;
+
+  const otpRecord = await OTP.findOne({
+    email: email,
+    otp: otp,
+  });
+
+  if (otpRecord == null) {
+    res.status(400).json({
+      message: "Invalid OTP",
+    });
+    return;
+  }
+
+  await OTP.deleteMany({
+    email: email,
+  });
+
+  const hashedPassword = bcrypt.hashSync(newPassword, 10);
+  try {
+    await User.updateOne({
+      email: email,
+    });
+  } catch (error) {
+    password: hashedPassword;
+  }
+  res
+    .json({
+      message: "password changed successfully",
+    })
+    .catch((err) =>
+      res.status(500).json({
+        message: "fsiled to change password",
+      })
+    );
 };
