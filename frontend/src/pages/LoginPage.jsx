@@ -11,9 +11,23 @@ const LoginPage = () => {
 
   const googleLogin = useGoogleLogin({
     onSuccess: (response) => {
-      axios.post(import.meta.env.VITE_API_URL + "/api/users/google-login", {
-        token: response.access_token,
-      });
+      axios
+        .post(import.meta.env.VITE_API_URL + "/api/users/google-login", {
+          token: response.access_token,
+        })
+        .then((res) => {
+          localStorage.setItem("token", res.data.token);
+          const user = res.data.user;
+          if (user.role == "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
+        })
+        .catch((err) => {
+          console.error("Google login failed", err);
+          toast.error("Google login failed.please try again");
+        });
     },
   });
 
