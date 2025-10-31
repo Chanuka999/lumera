@@ -273,16 +273,17 @@ export const sendOTP = async (req, res) => {
     return;
   }
 
-  const otp = Math.floor(100000 + Math.random() * 900000);
+  const generatedOtp = Math.floor(100000 + Math.random() * 900000);
 
   try {
-    await otp.deleteMany({
+    // remove any previous OTPs for this email
+    await OTP.deleteMany({
       email: email,
     });
 
     const newOTP = new OTP({
       email: email,
-      otp: otp,
+      otp: generatedOtp,
     });
 
     await newOTP.save();
@@ -291,13 +292,14 @@ export const sendOTP = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Your OTP for password reset",
-      text: `your OTP for password reset is ${otp}.It is valid for 10 minutes`,
+      text: `your OTP for password reset is ${generatedOtp}. It is valid for 10 minutes`,
     });
 
     res.json({
       message: "OTP sent to your email",
     });
   } catch (error) {
+    console.error("sendOTP error:", error);
     res.status(500).json({
       message: "Failed to send OTP",
     });
@@ -305,41 +307,38 @@ export const sendOTP = async (req, res) => {
 };
 
 export const changePasswordViaOTP = async (req, res) => {
-  const email = req.body.email;
-  const otp = req.body.otp;
-  const newPassword = req.body.newPassword;
+  const { email, otp, newPassword } = req.body;
 
-  const otpRecord = await OTP.findOne({
-    email: email,
-    otp: otp,
-  });
-
-  if (otpRecord == null) {
-    res.status(400).json({
-      message: "Invalid OTP",
-    });
-    return;
+  if (!email || !otp || !newPassword) {
+    return res
+      .status(400)
+      .json({ message: "email, otp and newPassword are required" });
   }
 
-  await OTP.deleteMany({
-    email: email,
-  });
-
-  const hashedPassword = bcrypt.hashSync(newPassword, 10);
   try {
-    await User.updateOne({
-      email: email,
-    });
-  } catch (error) {
-    password: hashedPassword;
-  }
-  res
-    .json({
-      message: "password changed successfully",
-    })
-    .catch((err) =>
-      res.status(500).json({
-        message: "fsiled to change password",
-      })
+    const otpRecord = await OTP.findOne({ email: email, otp: otp });
+    if (otpRecord == null) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    // delete OTPs for this email so they can't be reused
+    await OTP.deleteMany({ email: email });
+
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+
+    const updated = await User.findOneAndUpdate(
+      { email: email },
+      { password: hashedPassword },
+      { new: true }
     );
+
+    if (!updated) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({ message: "password changed successfully" });
+  } catch (error) {
+    console.error("changePasswordViaOTP error:", error);
+    return res.status(500).json({ message: "Failed to change password" });
+  }
 };
