@@ -95,6 +95,14 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full h-12 px-4 bg-white/80 text-[var(--color-secondary)] rounded-lg border border-[var(--color-primary)]/50 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all placeholder:text-[var(--color-secondary)]/50"
           />
+          <div className="flex items-center justify-end  text-sm">
+            <Link
+              to="/forget-password"
+              className="text-accent hover:underline underline-offset-4"
+            >
+              forgot password
+            </Link>
+          </div>
           <button
             onClick={handleLogin}
             className="w-full h-12 bg-[var(--color-accent)] text-white font-medium rounded-lg hover:bg-[var(--color-accent)]/80 transition-all duration-300 shadow-md"

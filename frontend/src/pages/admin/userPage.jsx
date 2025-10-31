@@ -6,29 +6,40 @@ import { FaRegEdit } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader";
+import { MdVerified } from "react-icons/md";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 
 function UserBlockConfirm(props) {
-  const email = props.email;
+  // derive email and other props from the passed user object
+  const email = props.user?.email;
   const close = props.close;
   const refresh = props.refresh;
 
   function blockUser() {
     const token = localStorage.getItem("token");
-    // axios
-    //   .delete(import.meta.env.VITE_API_URL + "/api/products/" + productId, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     close();
-    //     toast.success("Product delete successfully");
-    //     refresh();
-    //   })
-    //   .catch(() => {
-    //     toast.error("Failed to delete product");
-    //   });
+    axios
+      .put(
+        import.meta.env.VITE_API_URL +
+          "/api/users/block/" +
+          encodeURIComponent(email),
+        {
+          isBlock: !props.user?.isBlock,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        close();
+        toast.success("user block status change successfully");
+        refresh();
+      })
+      .catch(() => {
+        toast.error("failed to change user block status");
+      });
   }
 
   return (
@@ -41,7 +52,8 @@ function UserBlockConfirm(props) {
           X
         </button>
         <p className="text-xl font-semibold">
-          Are you sure you want to block the user with email : {email}?
+          Are you sure you want to {props.user.isBlock ? "unblock" : "block"}{" "}
+          the user with email : {email}?
         </p>
         <div className="flex gap-[40px]">
           <button
@@ -72,8 +84,18 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     if (isLoading) {
+      const token = localStorage.getItem("token");
+      if (token == null) {
+        toast.error("please login to access admin panel");
+        navigate("/login");
+        return;
+      }
       axios
-        .get(import.meta.env.VITE_API_URL + "/api/users/all-users")
+        .get(import.meta.env.VITE_API_URL + "/api/users/all-users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           // API returns { data: products }
@@ -96,7 +118,7 @@ export default function AdminUsersPage() {
           refresh={() => {
             setIsLoading(true);
           }}
-          email={userToBlock.email}
+          user={userToBlock}
           close={() => {
             setIsBlockConfirmVisible(false);
           }}
@@ -111,7 +133,7 @@ export default function AdminUsersPage() {
       </Link>
 
       <h1 className="text-2xl font-bold text-secondary mb-6">
-        Product Management
+        User Management
       </h1>
 
       <div className="overflow-x-auto shadow-md rounded-2xl bg-white">
@@ -122,27 +144,33 @@ export default function AdminUsersPage() {
             <thead className="bg-secondary text-white">
               <tr>
                 <th className="py-3 px-4">Image</th>
+                <th className="py-3 px-4">Email</th>
                 <th className="py-3 px-4">First Name</th>
                 <th className="py-3 px-4">Last Name</th>
                 <th className="py-3 px-4">Role</th>
-
                 <th className="py-3 px-4">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {users.map((item, index) => (
+              {users.map((user, index) => (
                 <tr
-                  key={item.productID}
+                  key={user.email}
                   className={`border-b hover:bg-primary transition-colors ${
                     index % 2 === 0 ? "bg-white" : "bg-gray-50"
                   }`}
                 >
                   <td className="py-3 px-4">
-                    {Array.isArray(item.images) && item.images.length > 0 ? (
+                    {user.image ? (
                       <img
-                        src={item.images[0]}
-                        alt={item.name}
-                        className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                        src={user.image}
+                        referrerPolicy="no-referrer"
+                        alt={user.firstName}
+                        className={
+                          "w-16 h-16 object-cover rounded-full shadow-sm border-4 p-1 " +
+                          (user.isBlock
+                            ? " border-red-600"
+                            : "border-green-600")
+                        }
                       />
                     ) : (
                       <div className="w-16 h-16 bg-gray-100 rounded-lg shadow-sm flex items-center justify-center text-xs text-gray-500">
@@ -150,42 +178,36 @@ export default function AdminUsersPage() {
                       </div>
                     )}
                   </td>
-                  <td className="py-3 px-4 font-medium text-secondary">
-                    {item.productId}
+
+                  <td className="py-3 px-4 font-medium text-secondary flex items-center gap-2">
+                    {user.email} {user.isEmailVerified && <MdVerified />}
                   </td>
-                  <td className="py-3 px-4">{item.name}</td>
+
                   <td className="py-3 px-4 text-green-600 font-semibold">
-                    ${item.price}
+                    {user.firstName}
                   </td>
-                  <td className="py-3 px-4 line-through text-gray-500">
-                    ${item.labelPrice}
+                  <td className="py-3 px-4  text-gray-500">{user.lastName}</td>
+                  <td className="py-3 px-4 text-gray-500 flex items-center justify-center gap-2">
+                    <p>
+                      {user.role == "admin" && <MdOutlineAdminPanelSettings />}
+                    </p>
+
+                    {user.role}
                   </td>
-                  <td className="py-3 px-4 text-gray-500">{item.stock}</td>
-                  <td className="py-3 px-4">{item.category}</td>
+
                   <td className="py-3 px-4">
-                    <div className="flex flex-row gap-4 justify-center items-center">
-                      <button
-                        className="p-2 rounded-full hover:bg-red-100 transition"
-                        onClick={() => {
-                          // ensure we pass the correct productId field from the API
-                          setProductToDelete(
-                            item.productId || item.productID || item._id
-                          );
-                          setIsDeleteConfirmVisible(true);
-                        }}
-                      >
-                        <FaRegTrashCan className="text-red-500 hover:text-red-700 text-lg" />
-                      </button>
-                      <button className="p-2 rounded-full hover:bg-accent/20 transition">
-                        <FaRegEdit
-                          className="text-accent hover:text-orange-700 text-lg"
+                    <div className="flex gap-3 justify-center items-center">
+                      {
+                        <button
                           onClick={() => {
-                            navigate("/admin/update-product", {
-                              state: item,
-                            });
+                            setUserToBlock(user);
+                            setIsBlockConfirmVisible(true);
                           }}
-                        />
-                      </button>
+                          className="w-[100px] h-[30px] bg-accent rounded-full cursor-pointer"
+                        >
+                          {user.isBlock ? "Unblock" : "Block"}
+                        </button>
+                      }
                     </div>
                   </td>
                 </tr>
