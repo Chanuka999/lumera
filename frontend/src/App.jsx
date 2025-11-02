@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage";
 import { Toaster } from "react-hot-toast";
 import RegisterPage from "./pages/RegisterPage";
 import ForgetPassword from "./pages/forget-password";
+import Setting from "./pages/Setting";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/admin/*" element={<AdminPage />} />
         <Route path="text" element={<TextPage />} />
+        <Route path="/setting" element={<Setting />} />
       </Routes>
     </div>
   );
