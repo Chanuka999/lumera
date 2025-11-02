@@ -119,7 +119,7 @@ const UserData = () => {
                 <MenuItem
                   icon={<User className="w-4 h-4" />}
                   label="Account Settings"
-                  href="/account"
+                  href="/setting"
                 />
                 <MenuItem
                   icon={<ShoppingBag className="w-4 h-4" />}

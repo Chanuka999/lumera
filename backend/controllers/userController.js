@@ -342,3 +342,59 @@ export const changePasswordViaOTP = async (req, res) => {
     return res.status(500).json({ message: "Failed to change password" });
   }
 };
+
+export const updateUserData = async (req, res) => {
+  if (req.user == null) {
+    res.status(401).json({
+      message: "unauthorized",
+    });
+    return;
+  }
+
+  try {
+    await User.updateOne(
+      {
+        email: req.user.email,
+      },
+      {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        image: req.body.image,
+      }
+    );
+    res.json({
+      message: "user data update successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "failed to update user data",
+    });
+  }
+};
+
+export const updatePassword = async (req, res) => {
+  if (req.user == null) {
+    res.status(401).json({
+      message: "unauthorized",
+    });
+    return;
+  }
+  try {
+    const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+    await User.updateOne(
+      {
+        email: req.user.email,
+      },
+      {
+        password: hashedPassword,
+      }
+    );
+    res.json({
+      message: "password updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to update password",
+    });
+  }
+};

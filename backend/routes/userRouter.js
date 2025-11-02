@@ -8,6 +8,8 @@ import {
   blockUser,
   sendOTP,
   changePasswordViaOTP,
+  updatePassword,
+  updateUserData,
 } from "../controllers/userController.js";
 
 const userRouter = express.Router();
@@ -20,5 +22,7 @@ userRouter.get("/all-users", getAllUsers);
 userRouter.put("/block/:email", blockUser);
 userRouter.get("/send-otp/:email", sendOTP);
 userRouter.post("/change-password/", changePasswordViaOTP);
+userRouter.put("/me", updateUserData);
+userRouter.put("/me/password", updatePassword);
 
 export default userRouter;
