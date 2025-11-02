@@ -97,3 +97,26 @@ export const getproductId = async (req, res) => {
     res.status(500).json({ message: "internel server error" });
   }
 };
+
+export const getProductsBySearch = async (req, res) => {
+  try {
+    const query = req.params.query;
+
+    const products = await Product.find({
+      $or: [
+        ({
+          name: { $regex: query, $options: "i" },
+        },
+        {
+          altName: { $eleMatch: { $regex: query, $options: "i" } },
+        }),
+      ],
+    });
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "failed to search products",
+    });
+  }
+};
