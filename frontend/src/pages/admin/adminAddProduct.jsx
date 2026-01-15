@@ -204,9 +204,13 @@ const AddProduct = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="cream">Cream</option>
-              <option value="lotion">Lotion</option>
-              <option value="serum">Serum</option>
+              <option value="indoor">indoor plants</option>
+              <option value="flowering">Flowering Plant</option>
+              <option value="low-maintence">Low-Maintenance</option>
+              <option value="herbal">Herbal</option>
+              <option value="outdoor">Outdoor</option>
+              <option value="rare">Rare</option>
+              <option value="seed">Seed & Starter Kits</option>
             </select>
 
             <label className="block mb-2 text-sm font-semibold text-secondary">
