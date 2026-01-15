@@ -6,17 +6,23 @@ import axios from "axios";
 
 export default function UpdateProductPage() {
   const location = useLocation();
-  const [productId, setProductId] = useState(location.state.productID);
-  const [name, setName] = useState(location.state.name);
-  const [altNames, setAltNames] = useState(location.state.altNames.join(","));
-  const [description, setDescription] = useState(location.state.description);
-  const [images, setImages] = useState([]);
-  const [price, setPrice] = useState(location.state.price);
-  const [labelledPrice, setLabelledPrice] = useState(
-    location.state.labelledPrice
+  const [productId, setProductId] = useState(location.state?.productID || "");
+  const [name, setName] = useState(location.state?.name || "");
+  const [altNames, setAltNames] = useState(
+    Array.isArray(location.state?.altNames)
+      ? location.state.altNames.join(",")
+      : ""
   );
-  const [category, setCategory] = useState(location.state.category);
-  const [stock, setStock] = useState(location.state.stock);
+  const [description, setDescription] = useState(
+    location.state?.description || ""
+  );
+  const [images, setImages] = useState([]);
+  const [price, setPrice] = useState(location.state?.price || "");
+  const [labelledPrice, setLabelledPrice] = useState(
+    location.state?.labelledPrice || ""
+  );
+  const [category, setCategory] = useState(location.state?.category || "");
+  const [stock, setStock] = useState(location.state?.stock || "");
   const navigate = useNavigate();
 
   async function updateProduct() {
@@ -41,13 +47,13 @@ export default function UpdateProductPage() {
       const alternativeNames = altNames.split(",");
 
       const product = {
-        productID: productId,
+        productId: productId,
         name: name,
-        altNames: alternativeNames,
+        altnames: alternativeNames,
         description: description,
         images: urls,
         price: price,
-        labelledPrice: labelledPrice,
+        labelPrice: labelledPrice,
         category: category,
         stock: stock,
       };
@@ -204,9 +210,13 @@ export default function UpdateProductPage() {
                 }}
                 className="h-11 rounded-xl border border-secondary/20 bg-white px-3 text-secondary outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition"
               >
-                <option value="cream">Cream</option>
-                <option value="lotion">Lotion</option>
-                <option value="serum">Serum</option>
+                <option value="indoor">indoor plants</option>
+                <option value="flowering">Flowering Plant</option>
+                <option value="low-maintence">Low-Maintenance</option>
+                <option value="herbal">Herbal</option>
+                <option value="outdoor">Outdoor</option>
+                <option value="rare">Rare</option>
+                <option value="seed">Seed & Starter Kits</option>
               </select>
             </label>
 
