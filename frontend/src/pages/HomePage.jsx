@@ -6,13 +6,14 @@ import ProductOverview from "./ProductOverview";
 import CartPage from "./Cart";
 import Checkout from "./Checkout";
 import Test from "./Test";
+import HomeMiddle from "../components/HomeMiddle";
 
 const HomePage = () => {
   return (
     <div className="w-full h-full bg-primary">
       <Header />
       <Routes>
-        <Route path="/" element={<h1>welcome to the homepage</h1>} />
+        <Route path="/" element={<HomeMiddle />} />
         <Route path="/products" element={<ProductPage />} />
         <Route path="/contact" element={<h1>contact us</h1>} />
         <Route path="/overview/:id" element={<ProductOverview />} />

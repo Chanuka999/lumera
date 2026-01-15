@@ -56,7 +56,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-[url('bg.jpg')] bg-cover bg-center flex font-sans">
+    <div className="w-full h-screen bg-[url('home.jpg')] bg-cover bg-center flex font-sans">
       {/* Left Decorative Side */}
       <div className="w-[50%] h-full bg-gradient-to-br flex flex-col justify-center items-center relative overflow-hidden">
         <img
