@@ -1,7 +1,30 @@
-import React, { useState } from "react";
+import axios from "axios";
+import ImageSection from "./ImageSection";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import ProductCard from "./ProductCard";
 
 const HomeMiddle = () => {
   const [activeImage, setActiveImage] = useState(0);
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoading) {
+      axios
+        .get(import.meta.env.VITE_API_URL + "/api/products")
+        .then((responce) => {
+          // API returns { data: products }
+          setProducts(responce.data?.data || []);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching products", error);
+          setIsLoading(false);
+          toast.error("failed to load products");
+        });
+    }
+  }, [isLoading]);
 
   // Array of 4 wallpaper images
   const wallpapers = [
@@ -90,6 +113,12 @@ const HomeMiddle = () => {
             aria-label={`Go to image ${index + 1}`}
           />
         ))}
+      </div>
+      <ImageSection />
+      <div className="w-full h-full flex flex-row flex-wrap justify-center items-center p-3">
+        {products.map((item) => {
+          return <ProductCard key={item.productId} product={item} />;
+        })}
       </div>
     </div>
   );
