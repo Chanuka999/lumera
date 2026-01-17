@@ -44,7 +44,7 @@ const Header = () => {
                 Home
               </a>
               <a href="/products" className="p-4 border-b border-secondary/10">
-                Products
+                Plants
               </a>
               <a href="/about" className="p-4 border-b border-secondary/10">
                 About
