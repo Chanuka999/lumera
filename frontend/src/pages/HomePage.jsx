@@ -8,6 +8,7 @@ import Checkout from "./Checkout";
 import Test from "./Test";
 import HomeMiddle from "../components/HomeMiddle";
 import Footer from "../components/footer";
+import ImageSection from "../components/ImageSection";
 
 const HomePage = () => {
   return (
@@ -23,6 +24,7 @@ const HomePage = () => {
         <Route path="/about" element={<h1>About us</h1>} />
         <Route path="/*" element={<h1>404 not found</h1>} />
       </Routes>
+
       <Footer />
     </div>
   );
