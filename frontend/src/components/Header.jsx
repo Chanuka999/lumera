@@ -4,11 +4,12 @@ import { BsCart4 } from "react-icons/bs";
 import { MdMenu } from "react-icons/md";
 
 import UserData from "./UserData";
+import About from "../pages/About";
 
 const Header = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
-    <div className="w-full h-[100px] bg-accent text-white px-[40px]">
+    <div className="w-full h-[60px] bg-accent text-white px-[40px]">
       <div className="w-full h-full flex relative">
         <img
           src="/logo.png"
@@ -47,7 +48,7 @@ const Header = () => {
                 Plants
               </a>
               <a href="/about" className="p-4 border-b border-secondary/10">
-                About
+                <About />
               </a>
               <a href="/contact" className="p-4 border-b border-secondary/10">
                 Contact
