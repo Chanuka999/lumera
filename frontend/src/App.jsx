@@ -9,10 +9,12 @@ import { Toaster } from "react-hot-toast";
 import RegisterPage from "./pages/RegisterPage";
 import ForgetPassword from "./pages/forget-password";
 import Setting from "./pages/Setting";
+import "./snow.css";
 
 function App() {
   return (
     <div className="w-full h-[100vh] ">
+      <div className="snow"></div>
       <Toaster position="top right" />
       <Routes path="/">
         <Route path="/*" element={<HomePage />} />
