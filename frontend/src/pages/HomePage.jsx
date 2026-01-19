@@ -9,6 +9,7 @@ import Test from "./Test";
 import HomeMiddle from "../components/HomeMiddle";
 import Footer from "../components/footer";
 import ImageSection from "../components/ImageSection";
+import About from "./About";
 
 const HomePage = () => {
   return (
@@ -21,7 +22,7 @@ const HomePage = () => {
         <Route path="/overview/:id" element={<ProductOverview />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/about" element={<h1>About us</h1>} />
+        <Route path="/about" element={<About />} />
         <Route path="/*" element={<h1>404 not found</h1>} />
       </Routes>
 
