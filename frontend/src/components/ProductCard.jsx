@@ -26,7 +26,7 @@ const ProductCard = (props) => {
   };
 
   return (
-    <div className="w-[300px] h-[400px] shadow-2xl flex flex-col m-3 p-[10px]">
+    <div className="w-[300px] h-[400px] shadow-2xl flex flex-col m-3 p-[10px] bg-yellow-100">
       {Array.isArray(product.images) && product.images.length > 0 ? (
         <img
           className="w-full h-[250px] object-cover"
