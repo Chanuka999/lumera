@@ -24,7 +24,7 @@ const RegisterPage = () => {
           password: password,
           firstName: firstName,
           lastName: lastName,
-        }
+        },
       );
       toast.success("registration successful please login");
       navigate("/login");
@@ -97,10 +97,10 @@ const RegisterPage = () => {
           className="w-48 h-auto mb-6 animate-pulse opacity-90"
         />
         <h1 className="text-4xl font-bold text-[var(--color-secondary)] tracking-tight">
-          Crystal Beauty Clear
+          Aurora Bloom
         </h1>
         <p className="text-lg text-[var(--color-secondary)] mt-4 max-w-md text-center">
-          Discover the essence of beauty with our premium cosmetic collection.
+          to connect people with nature in the easiest way possible
         </p>
         {/* Decorative Elements */}
         <div className="absolute inset-0 opacity-20">
