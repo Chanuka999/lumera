@@ -25,7 +25,7 @@ const ProductPage = () => {
     }
   }, [isLoading]);
   return (
-    <div className="w-full min-h-[calc(100vh-100px)] bg-primary">
+    <div className="w-full min-h-[calc(100vh-100px)] bg-gray-400">
       <div className="w-full h-[100px] flex justify-center items-center">
         <input
           type="text"
@@ -37,7 +37,7 @@ const ProductPage = () => {
                 const searchResult = await axios.get(
                   import.meta.env.VITE_API_URL +
                     "/api/products/search/" +
-                    e.target.value
+                    e.target.value,
                 );
                 setProducts(searchResult.data);
               }
