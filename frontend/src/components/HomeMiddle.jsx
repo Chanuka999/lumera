@@ -45,7 +45,7 @@ const HomeMiddle = () => {
   };
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative bg-gray-400">
       {/* Main Image Display */}
       <div className="w-full h-[500px] overflow-hidden relative group">
         <img
