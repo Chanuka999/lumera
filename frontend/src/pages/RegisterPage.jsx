@@ -35,7 +35,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-[url('bg.jpg')] bg-cover bg-center flex font-sans">
+    <div className="w-full h-screen bg-[url('home5.jpg')] bg-cover bg-center flex font-sans">
       {/* Right Login Form Side */}
       <div className="w-[50%] h-full flex justify-center items-center">
         <div className="w-[500px] p-8 backdrop-blur-xl bg-white/30 shadow-2xl rounded-2xl flex flex-col justify-center items-center gap-6 border border-[var(--color-primary)]/50">
@@ -92,14 +92,14 @@ const RegisterPage = () => {
       {/* Left Decorative Side */}
       <div className="w-[50%] h-full bg-gradient-to-br flex flex-col justify-center items-center relative overflow-hidden">
         <img
-          src="/logo.png"
+          src="/aurora1.png"
           alt="CBC Logo"
-          className="w-48 h-auto mb-6 animate-pulse opacity-90"
+          className="w-48 h-auto mb-6 animate-pulse opacity-100 backdrop-blur-xl bg-white/90 shadow-2xl rounded-2xl"
         />
-        <h1 className="text-4xl font-bold text-[var(--color-secondary)] tracking-tight">
+        <h1 className="text-4xl font-bold text-[var(--color-primary)] tracking-tight">
           Aurora Bloom
         </h1>
-        <p className="text-lg text-[var(--color-secondary)] mt-4 max-w-md text-center">
+        <p className="text-lg text-[var(--color-primary)] mt-4 max-w-md text-center">
           to connect people with nature in the easiest way possible
         </p>
         {/* Decorative Elements */}

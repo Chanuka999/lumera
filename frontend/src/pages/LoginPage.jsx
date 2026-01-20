@@ -60,9 +60,9 @@ const LoginPage = () => {
       {/* Left Decorative Side */}
       <div className="w-[50%] h-full bg-gradient-to-br flex flex-col justify-center items-center relative overflow-hidden">
         <img
-          src="/logo.png"
-          alt="CBC Logo"
-          className="w-48 h-auto mb-6 animate-pulse opacity-90"
+          src="/aurora1.png"
+          alt="aurora Logo"
+          className="w-48 h-auto mb-6 animate-pulse opacity-100 backdrop-blur-xl bg-white/90 shadow-2xl rounded-2xl"
         />
         <h1 className="text-4xl font-bold text-amber-400 tracking-tight">
           Aurora Bloom
