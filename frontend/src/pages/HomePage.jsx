@@ -10,6 +10,7 @@ import HomeMiddle from "../components/HomeMiddle";
 import Footer from "../components/footer";
 import ImageSection from "../components/ImageSection";
 import About from "./About";
+import Contact from "./Contact";
 
 const HomePage = () => {
   return (
@@ -18,11 +19,12 @@ const HomePage = () => {
       <Routes>
         <Route path="/" element={<HomeMiddle />} />
         <Route path="/products" element={<ProductPage />} />
-        <Route path="/contact" element={<h1>contact us</h1>} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/overview/:id" element={<ProductOverview />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/about" element={<About />} />
+
         <Route path="/*" element={<h1>404 not found</h1>} />
       </Routes>
 

@@ -5,16 +5,17 @@ import { MdMenu } from "react-icons/md";
 
 import UserData from "./UserData";
 import About from "../pages/About";
+import Contact from "../pages/Contact";
 
 const Header = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
-    <div className="w-full h-[60px] bg-accent text-white px-[40px]">
+    <div className="w-full h-[80px] bg-accent text-white px-[40px]">
       <div className="w-full h-full flex relative">
         <img
-          src="/logo.png"
+          src="/aurora1.png"
           alt=""
-          className="h-full w-[170px] hidden lg:flex  absolute left-0 object-cover"
+          className="h-full w-[120px]  hidden lg:flex  absolute left-0 object-cover"
         />
         <div className="lg:hidden w-full relative flex items-center justify-center">
           <MdMenu
@@ -48,10 +49,10 @@ const Header = () => {
                 Plants
               </a>
               <a href="/about" className="p-4 border-b border-secondary/10">
-                <About />
+                About
               </a>
               <a href="/contact" className="p-4 border-b border-secondary/10">
-                Contact
+                contact
               </a>
               <a href="/cart" className="p-4 border-b border-secondary/10">
                 Cart
