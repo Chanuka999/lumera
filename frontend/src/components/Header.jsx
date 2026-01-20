@@ -4,8 +4,6 @@ import { BsCart4 } from "react-icons/bs";
 import { MdMenu } from "react-icons/md";
 
 import UserData from "./UserData";
-import About from "../pages/About";
-import Contact from "../pages/Contact";
 
 const Header = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
