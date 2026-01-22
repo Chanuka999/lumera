@@ -32,14 +32,14 @@ const Contact = () => {
               <h3 className="text-xl font-semibold text-green-700 mb-2">
                 📧 Email
               </h3>
-              <p className="text-gray-600">support@aurorabloom.com</p>
+              <p className="text-gray-600">chanukaranditha99@gmail.com</p>
             </div>
 
             <div className="bg-white p-6 rounded-xl shadow animate-float">
               <h3 className="text-xl font-semibold text-green-700 mb-2">
                 📞 Phone
               </h3>
-              <p className="text-gray-600">+94 77 123 4567</p>
+              <p className="text-gray-600">+94 77 2849767</p>
             </div>
           </div>
 
