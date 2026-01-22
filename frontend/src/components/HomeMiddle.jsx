@@ -3,6 +3,7 @@ import ImageSection from "./ImageSection";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ProductCard from "./ProductCard";
+import About from "../pages/About";
 
 const HomeMiddle = () => {
   const [activeImage, setActiveImage] = useState(0);
@@ -120,6 +121,7 @@ const HomeMiddle = () => {
           return <ProductCard key={item.productId} product={item} />;
         })}
       </div>
+      <About />
     </div>
   );
 };
