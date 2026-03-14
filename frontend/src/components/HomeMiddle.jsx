@@ -116,11 +116,7 @@ const HomeMiddle = () => {
         ))}
       </div>
       <ImageSection />
-      <div className="w-full h-full flex flex-row flex-wrap justify-center items-center p-3">
-        {products.map((item) => {
-          return <ProductCard key={item.productId} product={item} />;
-        })}
-      </div>
+
       <About />
     </div>
   );
