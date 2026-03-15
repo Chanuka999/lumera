@@ -1,13 +1,13 @@
 import React from "react";
 import Header from "../components/Header";
 import { Route, Routes } from "react-router-dom";
-import ProductPage from "./productPage";
+import ProductPage from "./ProductPage";
 import ProductOverview from "./ProductOverview";
 import CartPage from "./Cart";
 import Checkout from "./Checkout";
 import Test from "./Test";
 import HomeMiddle from "../components/HomeMiddle";
-import Footer from "../components/footer";
+import Footer from "../components/Footer";
 import ImageSection from "../components/ImageSection";
 import About from "./About";
 import Contact from "./Contact";
