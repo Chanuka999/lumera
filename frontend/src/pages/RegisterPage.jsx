@@ -35,7 +35,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-[url('home5.jpg')] bg-cover bg-center flex font-sans">
+    <div className="w-full h-screen bg-[url('/home5.jpg')] bg-cover bg-center flex font-sans">
       {/* Right Login Form Side */}
       <div className="w-[50%] h-full flex justify-center items-center">
         <div className="w-[500px] p-8 backdrop-blur-xl bg-white/30 shadow-2xl rounded-2xl flex flex-col justify-center items-center gap-6 border border-[var(--color-primary)]/50">

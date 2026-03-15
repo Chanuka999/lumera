@@ -68,13 +68,13 @@ const Setting = () => {
     }
     await axios
       .put(
-        import.meta.env.VITE_API_URL + "api/users/me/password",
+        import.meta.env.VITE_API_URL + "/api/users/me/password",
         {
           password: password,
         },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
+        },
       )
       .then(() => {
         toast.success("password updated successfully");
@@ -89,7 +89,7 @@ const Setting = () => {
   };
 
   return (
-    <div className="w-full h-full bg-[url('bg.jpg')] bg-cover bg-center bg-no-repeat flex flex-col lg:flex-row justify-center items-center p-6">
+    <div className="w-full h-full bg-[url('/home.jpg')] bg-cover bg-center bg-no-repeat flex flex-col lg:flex-row justify-center items-center p-6">
       {/* Left Panel – User Info */}
       <div className="w-full lg:w-[40%] backdrop-blur-2xl bg-primary/70 rounded-2xl m-6 p-6 flex flex-col shadow-xl border border-secondary/20">
         <h1 className="text-2xl font-bold mb-6 text-center text-secondary">

@@ -28,12 +28,7 @@ const HomeMiddle = () => {
   }, [isLoading]);
 
   // Array of 4 wallpaper images
-  const wallpapers = [
-    "../public/home.jpg",
-    "../public/home2.jpg",
-    "../public/home3.jpg",
-    "../public/home4.jpg",
-  ];
+  const wallpapers = ["/home.jpg", "/home2.jpg", "/home3.jpg", "/home4.jpg"];
 
   // Navigate to previous image
   const handlePrevious = () => {

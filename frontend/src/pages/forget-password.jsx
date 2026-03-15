@@ -14,7 +14,7 @@ export default function ForgetPassword() {
   async function sendOTP(params) {
     try {
       await axios.get(
-        import.meta.env.VITE_API_URL + "/api/users/send-otp/" + email
+        import.meta.env.VITE_API_URL + "/api/users/send-otp/" + email,
       );
       toast.success("OTP sent to your email " + email);
       setStep("otp");
@@ -36,10 +36,10 @@ export default function ForgetPassword() {
           email: email,
           otp: otp,
           newPassword: newPassword,
-        }
+        },
       );
       toast.success(
-        "Password changed successfully. Please login with your new passsword"
+        "Password changed successfully. Please login with your new passsword",
       );
       navigate("/login");
     } catch (e) {
@@ -50,7 +50,7 @@ export default function ForgetPassword() {
   }
 
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-[url('/bg.jpg')] bg-cover bg-center">
+    <div className="w-full h-screen flex justify-center items-center bg-[url('/home.jpg')] bg-cover bg-center">
       {step == "email" && (
         <div className="w-[400px] h-[400px] backdrop-blur-lg rounded-2xl flex flex-col justify-center items-center p-6">
           <h1 className="text-2xl font-semibold text-secondary mb-6">
