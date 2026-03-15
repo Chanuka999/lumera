@@ -14,6 +14,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 dotenv.config();
+
+const PORT = process.env.PORT || 5000;
 app.use((req, res, next) => {
   const authHeader = req.header("Authorization");
 
@@ -51,6 +53,17 @@ app.use("/api/products", productRouter);
 app.use("/api/image-proxy", imageProxyRouter);
 app.use("/api/orders", orderRouter);
 
-app.listen(5000, () => {
-  console.log("server is running on port 5000");
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Lumera backend is running",
+    status: "ok",
+  });
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+app.listen(PORT, () => {
+  console.log(`server is running on port ${PORT}`);
 });
