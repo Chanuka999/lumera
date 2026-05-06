@@ -120,3 +120,5 @@ export const getProductsBySearch = async (req, res) => {
     });
   }
 };
+
+//get user
